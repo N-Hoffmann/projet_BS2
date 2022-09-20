@@ -88,5 +88,3 @@ def read_interaction_file(input_file):
     l_int = read_interaction_file_list(input_file)
     m_int, l_som = read_interaction_file_mat(input_file)
     return d_int, l_int, m_int, l_som
-
-print((read_interaction_file('example2.txt')))
