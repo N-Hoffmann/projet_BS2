@@ -39,7 +39,7 @@ def read_interaction_file_list(input_file):
     return list_node
 
 def read_interaction_file_mat(input_file):
-    """Reads an interaction file and createss an adjency matrix
+    """Reads an interaction file and creates an adjency matrix
 
     Parameters
     ----------
@@ -62,3 +62,31 @@ def read_interaction_file_mat(input_file):
         for key in int_dict[ord_node[i]]:
             adj_matrix[i][ord_node.index(key)] = 1
     return adj_matrix, ord_node
+
+def read_interaction_file(input_file):
+    """Reads an interaction network file and returns a dictionnary with the nodes as keys,
+    a list of all the interactions, the adjency matrix and a sorted list of nodes
+    This main function calls and returns all previous function
+
+    Parameters
+    ----------
+    input_file : .csv
+        Path to .csv file containing two interacting nodes on each line
+
+    Returns
+    -------
+    d_int
+        Dictionnary containing nodes as key and interacting nodes as values
+    l_int
+        List containing interacting nodes as tuples
+    m_int
+        Adjency matrix
+    l_som
+        Sorted list of nodes
+    """
+    d_int = read_interaction_file_dict(input_file)
+    l_int = read_interaction_file_list(input_file)
+    m_int, l_som = read_interaction_file_mat(input_file)
+    return d_int, l_int, m_int, l_som
+
+print((read_interaction_file('example2.txt')))
