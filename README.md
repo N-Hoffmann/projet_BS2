@@ -1,1 +1,2 @@
-# projet_BS2
+# Projet Réseaux Biologiques en Python
+## Nicolaï Hoffmann
