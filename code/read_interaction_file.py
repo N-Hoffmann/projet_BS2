@@ -35,8 +35,9 @@ def read_interaction_file_list(input_file):
     df = pandas.read_csv(input_file,skiprows=1, header=None)
     list_node = []
     for i in range(len(df.index)):
-        if (df.loc[i,0], df.loc[i,1]) or (df.loc[i,1],df.loc[i,0]) not in list_node:
-            list_node.append((df.loc[i,0], df.loc[i,1]))
+        if (df.loc[i,0], df.loc[i,1]) not in list_node:
+            if (df.loc[i,1],df.loc[i,0]) not in list_node:
+                list_node.append((df.loc[i,0], df.loc[i,1]))
     return list_node
 
 def read_interaction_file_mat(input_file):
@@ -119,5 +120,3 @@ def is_interaction_file(input_file):
     if len(df.columns) != 2:
         return False
     return True
-
-print(read_interaction_file("../data/example.csv"))
