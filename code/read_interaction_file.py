@@ -62,6 +62,7 @@ def read_interaction_file_mat(input_file):
     for i in range(len(ord_node)):
         for key in int_dict[ord_node[i]]:
             adj_matrix[i][ord_node.index(key)] = 1
+    print(adj_matrix)
     return adj_matrix, ord_node
 
 def read_interaction_file(input_file):
@@ -91,11 +92,26 @@ def read_interaction_file(input_file):
     return d_int, l_int, m_int, l_som
 
 def is_interaction_file(input_file):
+    """Checks if input file is a correct interaction file
+    Checks if input file is not empty
+    Checks if first line is an integer and the correct number of connectors
+    Checks if there are only two columns in input file
+
+    Parameters
+    ----------
+    input_file : csv file
+        Path to .csv file containing two interacting nodes on each line
+
+    Returns
+    -------
+    True
+        True if input file is a correct interaction file
+    """
+    if os.stat(input_file).st_size == 0:
+        return False
     with open(input_file) as input:
         firstline = input.readlines()[0].rstrip()
-    if type(int(firstline)) != int:
-        return False
-    if os.stat(input_file).st_size == 0:
+    if firstline.isdigit() == False:
         return False
     if (int(firstline)) != len(read_interaction_file_list(input_file)):
         return False
@@ -103,3 +119,5 @@ def is_interaction_file(input_file):
     if len(df.columns) != 2:
         return False
     return True
+
+print(read_interaction_file("../data/example.csv"))
