@@ -16,7 +16,7 @@ def count_vertices(file):
     int
         Number of vertices in file
     """
-    df = pandas.read_csv(file, sep = " ", skiprows=1, header=None)
+    df = pandas.read_csv(file, sep = None, engine = 'python', skiprows=1, header=None)
     return len(df.index)
 
 def count_edges(file):
@@ -32,7 +32,7 @@ def count_edges(file):
     int
         Number of edges in file
     """
-    df = pandas.read_csv(file, sep = " ", skiprows=1, header=None)
+    df = pandas.read_csv(file, sep = None, engine = 'python', skiprows=1, header=None)
     return len(set(numpy.concatenate(df.values)))
 
 def clean_interactome(filein,fileout):
@@ -46,7 +46,7 @@ def clean_interactome(filein,fileout):
     fileout : .txt
         Path to new cleaned .txt file
     """
-    df = pandas.read_csv(filein, sep = " ", skiprows=1, header=None)
+    df = pandas.read_csv(filein, sep = None, engine = 'python', skiprows=1, header=None)
     list_out = []
     for i in range(len(df.index)):
         if (df.loc[i,0], df.loc[i,1]) not in list_out:
