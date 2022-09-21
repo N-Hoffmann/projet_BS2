@@ -9,10 +9,10 @@ def read_interaction_file_dict(input_file):
 
     Parameters
     ----------
-    input_file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    input_file : .txt
+        Path to .txt file containing two interacting nodes on each line
     """
-    df = pandas.read_csv(input_file,skiprows=1, header=None)
+    df = pandas.read_csv(input_file, sep = "\t", skiprows=1, header=None)
     dict_node = {}
     for key in set(numpy.concatenate(df.values)):
         dict_node[key] = []
@@ -29,10 +29,10 @@ def read_interaction_file_list(input_file):
 
     Parameters
     ----------
-    input_file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    input_file : .txt
+        Path to .txt file containing two interacting nodes on each line
     """
-    df = pandas.read_csv(input_file,skiprows=1, header=None)
+    df = pandas.read_csv(input_file, sep = "\t", skiprows=1, header=None)
     list_node = []
     for i in range(len(df.index)):
         if (df.loc[i,0], df.loc[i,1]) not in list_node:
@@ -45,8 +45,8 @@ def read_interaction_file_mat(input_file):
 
     Parameters
     ----------
-    input_file : .csv
-        Path to .csv file containing two interacting nodes on each line 
+    input_file : .txt
+        Path to .txt file containing two interacting nodes on each line 
 
     Returns
     -------
@@ -55,7 +55,7 @@ def read_interaction_file_mat(input_file):
     ord_node
         Sorted list of nodes used to create the adjency matrix
     """
-    df = pandas.read_csv(input_file,skiprows=1, header=None)
+    df = pandas.read_csv(input_file, sep = "\t", skiprows=1, header=None)
     list_node = set(numpy.concatenate(df.values))
     ord_node = sorted(list(deepcopy(list_node)))
     int_dict = read_interaction_file_dict(input_file)
@@ -63,7 +63,6 @@ def read_interaction_file_mat(input_file):
     for i in range(len(ord_node)):
         for key in int_dict[ord_node[i]]:
             adj_matrix[i][ord_node.index(key)] = 1
-    print(adj_matrix)
     return adj_matrix, ord_node
 
 def read_interaction_file(input_file):
@@ -73,8 +72,8 @@ def read_interaction_file(input_file):
 
     Parameters
     ----------
-    input_file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    input_file : .txt
+        Path to .txt file containing two interacting nodes on each line
 
     Returns
     -------
@@ -100,8 +99,8 @@ def is_interaction_file(input_file):
 
     Parameters
     ----------
-    input_file : csv file
-        Path to .csv file containing two interacting nodes on each line
+    input_file : .txt file
+        Path to .txt file containing two interacting nodes on each line
 
     Returns
     -------
@@ -114,9 +113,10 @@ def is_interaction_file(input_file):
         firstline = input.readlines()[0].rstrip()
     if firstline.isdigit() == False:
         return False
-    if (int(firstline)) != len(read_interaction_file_list(input_file)):
+    if int(firstline) != len(read_interaction_file_list(input_file)):
+        print(len(read_interaction_file_list(input_file)))
         return False
-    df = pandas.read_csv(input_file,skiprows=1, header=None)
+    df = pandas.read_csv(input_file, sep = " ",skiprows=1, header=None)
     if len(df.columns) != 2:
         return False
     return True

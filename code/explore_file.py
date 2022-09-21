@@ -8,31 +8,31 @@ def count_vertices(file):
 
     Parameters
     ----------
-    file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    file : .txt
+        Path to .txt file containing two interacting nodes on each line
 
     Returns
     -------
     int
         Number of vertices in file
     """
-    df = pandas.read_csv(file,skiprows=1, header=None)
-    return (len(df.index))
+    df = pandas.read_csv(file, sep = " ", skiprows=1, header=None)
+    return len(df.index)
 
 def count_edges(file):
     """Returns the number of edges in a graph interaction file
 
     Parameters
     ----------
-    file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    file : .txt
+        Path to .txt file containing two interacting nodes on each line
 
     Returns
     -------
     int
         Number of edges in file
     """
-    df = pandas.read_csv(file,skiprows=1, header=None)
+    df = pandas.read_csv(file, sep = " ", skiprows=1, header=None)
     return len(set(numpy.concatenate(df.values)))
 
 def clean_interactome(filein,fileout):
@@ -41,12 +41,12 @@ def clean_interactome(filein,fileout):
 
     Parameters
     ----------
-    filein : .csv
-        Path to .csv file containing two interacting nodes on each line
-    fileout : .csv
-        Path to new cleaned .csv file
+    filein : .txt
+        Path to .txt file containing two interacting nodes on each line
+    fileout : .txt
+        Path to new cleaned .txt file
     """
-    df = pandas.read_csv(filein,skiprows=1, header=None)
+    df = pandas.read_csv(filein, sep = " ", skiprows=1, header=None)
     list_out = []
     for i in range(len(df.index)):
         if (df.loc[i,0], df.loc[i,1]) not in list_out:
@@ -63,8 +63,8 @@ def get_degree(file,prot):
 
     Parameters
     ----------
-    file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    file : .txt
+        Path to .txt file containing two interacting nodes on each line
     prot : str
         Name of a protein in the network
 
@@ -74,15 +74,15 @@ def get_degree(file,prot):
         Degree of interactions of node "prot"
     """
     dict_nodes = rfi.read_interaction_file_dict(file)
-    return (len(dict_nodes[prot]))
+    return len(dict_nodes[prot])
 
 def get_max_degree(file):
-    """Returns the nodes with the highest degree and the degree
+    """Returns the nodes with the highest degree and its corresponding degree
 
     Parameters
     ----------
-    file : file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    file : file : .txt
+        Path to .txt file containing two interacting nodes on each line
 
     Returns
     -------
@@ -101,8 +101,8 @@ def get_ave_degree(file):
 
     Parameters
     ----------
-    file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    file : .txt
+        Path to .txt file containing two interacting nodes on each line
 
     Returns
     -------
@@ -120,9 +120,8 @@ def count_degree(file,deg):
 
     Parameters
     ----------
-    file : .csv
-        Path to .csv file containing two interacting nodes on each line
-
+    file : .txt
+        Path to .txt file containing two interacting nodes on each line
     deg : int
         Degree
 
@@ -138,22 +137,38 @@ def count_degree(file,deg):
             exact_count += 1
     return exact_count
 
+# def histogram_degree(file,dmin,dmax):
+#     """Prints an histogram with number of nodes having each degree
+#     Degrees are in the range of dmin,dmax
+
+#     Parameters
+#     ----------
+#     file : .csv
+#         Path to .csv file containing two interacting nodes on each line
+#     dmin : int
+#         Lower bound of degree range
+#     dmax : int
+#         Upper bound of degree range
+#     """
+#     dict_degrees = {}
+#     for deg in range(dmin,dmax+1):
+#         cnt_degree = count_degree(file,deg)
+#         dict_degrees[deg] = cnt_degree
+#         print(deg,"","*"*cnt_degree)
+#     return dict_degrees
+
 def histogram_degree(file,dmin,dmax):
     """Prints an histogram with number of nodes having each degree
     Degrees are in the range of dmin,dmax
 
     Parameters
     ----------
-file : .csv
-        Path to .csv file containing two interacting nodes on each line
+    file : .txt
+        Path to .txt file containing two interacting nodes on each line
     dmin : int
         Lower bound of degree range
     dmax : int
         Upper bound of degree range
     """
-    dict_degrees = {}
     for deg in range(dmin,dmax+1):
-        cnt_degree = count_degree(file,deg)
-        dict_degrees[deg] = cnt_degree
-        print(deg,"","*"*cnt_degree)
-    return dict_degrees
+        print(deg,"","*"*count_degree(file,deg))
