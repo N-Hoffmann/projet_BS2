@@ -1,6 +1,7 @@
 import pandas
 import numpy
 from copy import deepcopy
+import os
 
 def read_interaction_file_dict(input_file):
     """Reads an input interaction network
@@ -88,3 +89,17 @@ def read_interaction_file(input_file):
     l_int = read_interaction_file_list(input_file)
     m_int, l_som = read_interaction_file_mat(input_file)
     return d_int, l_int, m_int, l_som
+
+def is_interaction_file(input_file):
+    with open(input_file) as input:
+        firstline = input.readlines()[0].rstrip()
+    if type(int(firstline)) != int:
+        return False
+    if os.stat(input_file).st_size == 0:
+        return False
+    if (int(firstline)) != len(read_interaction_file_list(input_file)):
+        return False
+    df = pandas.read_csv(input_file,skiprows=1, header=None)
+    if len(df.columns) != 2:
+        return False
+    return True
