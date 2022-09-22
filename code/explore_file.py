@@ -159,7 +159,7 @@ def count_degree(file,deg):
 
 def histogram_degree(file,dmin,dmax):
     """Prints an histogram with number of nodes having each degree
-    Degrees are in the range of dmin,dmax
+    Degrees are in the range of dmin,dmax (dmax included)
 
     Parameters
     ----------

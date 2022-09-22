@@ -11,6 +11,11 @@ def read_interaction_file_dict(input_file):
     ----------
     input_file : .txt
         Path to .txt file containing two interacting nodes on each line
+
+    Returns
+    -------
+    dict_node : dict
+        Dictionnary containing nodes as key and interaction nodes as values
     """
     df = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
     dict_node = {}
@@ -31,6 +36,11 @@ def read_interaction_file_list(input_file):
     ----------
     input_file : .txt
         Path to .txt file containing two interacting nodes on each line
+    
+    Returns
+    -------
+    list_node : list
+        List containing interacting nodes as tuples
     """
     df = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
     list_node = []
@@ -50,9 +60,9 @@ def read_interaction_file_mat(input_file):
 
     Returns
     -------
-    adj_matrix
+    adj_matrix : array
         Adjency matrix
-    ord_node
+    ord_node : list
         Sorted list of nodes used to create the adjency matrix
     """
     df = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
@@ -77,13 +87,13 @@ def read_interaction_file(input_file):
 
     Returns
     -------
-    d_int
+    d_int : dict
         Dictionnary containing nodes as key and interacting nodes as values
-    l_int
+    l_int : list
         List containing interacting nodes as tuples
-    m_int
+    m_int : array
         Adjency matrix
-    l_som
+    l_som : list
         Sorted list of nodes
     """
     d_int = read_interaction_file_dict(input_file)
@@ -104,7 +114,7 @@ def is_interaction_file(input_file):
 
     Returns
     -------
-    True
+    True : boolean
         True if input file is a correct interaction file
     """
     if os.stat(input_file).st_size == 0:
@@ -114,7 +124,6 @@ def is_interaction_file(input_file):
     if firstline.isdigit() == False:
         return False
     if int(firstline) != len(read_interaction_file_list(input_file)):
-        print(len(read_interaction_file_list(input_file)))
         return False
     df = pandas.read_csv(input_file, sep = None, engine = 'python',skiprows=1, header=None)
     if len(df.columns) != 2:
