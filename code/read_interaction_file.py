@@ -102,9 +102,9 @@ def read_interaction_file(input_file):
     return d_int, l_int, m_int, l_som
 
 def is_interaction_file(input_file):
-    """Checks if input file is a correct interaction file
+    """Checks if input file is in a correct interaction file format
     Checks if input file is not empty
-    Checks if first line is an integer and the correct number of connectors
+    Checks if first line is an integer and is the correct number of connectors
     Checks if there are only two columns in input file
 
     Parameters

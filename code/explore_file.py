@@ -52,9 +52,13 @@ def clean_interactome(filein,fileout):
         if (df.loc[i,0], df.loc[i,1]) not in list_out:
             if (df.loc[i,1],df.loc[i,0]) not in list_out:
                 list_out.append((df.loc[i,0], df.loc[i,1]))
-    with open(fileout,'w') as output:
+    
+    # Find a better way to sniff delimiter ?
+    with open(filein, 'r') as file:
+        delim = (csv.Sniffer().sniff(file.readlines()[1])).delimiter
+    with open(fileout,'w', newline ="") as output:
         output.write(str(len(list_out)) + "\n")
-        writer = csv.writer(output, delimiter=",")
+        writer = csv.writer(output, delimiter=delim)
         for intrctn in list_out:
             writer.writerow(intrctn)
 
@@ -137,38 +141,38 @@ def count_degree(file,deg):
             exact_count += 1
     return exact_count
 
-# def histogram_degree(file,dmin,dmax):
-#     """Prints an histogram with number of nodes having each degree
-#     Degrees are in the range of dmin,dmax
-
-#     Parameters
-#     ----------
-#     file : .csv
-#         Path to .csv file containing two interacting nodes on each line
-#     dmin : int
-#         Lower bound of degree range
-#     dmax : int
-#         Upper bound of degree range
-#     """
-#     dict_degrees = {}
-#     for deg in range(dmin,dmax+1):
-#         cnt_degree = count_degree(file,deg)
-#         dict_degrees[deg] = cnt_degree
-#         print(deg,"","*"*cnt_degree)
-#     return dict_degrees
-
 def histogram_degree(file,dmin,dmax):
     """Prints an histogram with number of nodes having each degree
-    Degrees are in the range of dmin,dmax (dmax included)
+    Degrees are in the range of dmin,dmax
 
     Parameters
     ----------
-    file : .txt
-        Path to .txt file containing two interacting nodes on each line
+    file : .csv
+        Path to .csv file containing two interacting nodes on each line
     dmin : int
         Lower bound of degree range
     dmax : int
         Upper bound of degree range
     """
+    dict_degrees = {}
     for deg in range(dmin,dmax+1):
-        print(deg,"","*"*count_degree(file,deg))
+        cnt_degree = count_degree(file,deg)
+        dict_degrees[deg] = cnt_degree
+        print(deg,"","*"*cnt_degree)
+    return dict_degrees
+
+# def histogram_degree(file,dmin,dmax):
+#     """Prints an histogram with number of nodes having each degree
+#     Degrees are in the range of dmin,dmax (dmax included)
+
+#     Parameters
+#     ----------
+#     file : .txt
+#         Path to .txt file containing two interacting nodes on each line
+#     dmin : int
+#         Lower bound of degree range
+#     dmax : int
+#         Upper bound of degree range
+#     """
+#     for deg in range(dmin,dmax+1):
+#         print(deg,"","*"*count_degree(file,deg))
