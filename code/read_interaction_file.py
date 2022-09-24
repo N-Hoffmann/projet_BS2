@@ -46,7 +46,6 @@ def read_interaction_file_list(input_file):
     for i in range(len(df.index)):
         list_node.append((df.loc[i,0], df.loc[i,1]))
     sorted_nodes = sorted(list(set(tuple(sorted(l)) for l in list_node)))
-    print(len(sorted_nodes))
     return sorted_nodes
 
 def read_interaction_file_mat(input_file):

@@ -1,7 +1,7 @@
 import numpy
 import pandas
 import csv
-import read_interaction_file as rfi
+import read_interaction_file as rif
 
 def count_vertices(file):
     """Returns the number of vertices in a graph interaction file
@@ -46,22 +46,19 @@ def clean_interactome(filein,fileout):
     fileout : .txt
         Path to new cleaned .txt file
     """
-    df = pandas.read_csv(filein, sep = None, engine = 'python', skiprows=1, header=None)
-    list_out = []
-    for i in range(len(df.index)):
-        if df.loc[i,0] == df.loc[i,1]:
-            pass
-        else:
-            list_out.append((df.loc[i,0], df.loc[i,1]))
-    sorted_nodes = sorted(list(set(tuple(sorted(l)) for l in list_out)))
+    list_out = rif.read_interaction_file_list(filein)
+    for intrctn in list_out:
+        if intrctn[0] == intrctn[1]:
+            list_out.remove(intrctn)
     with open(filein, 'r') as file:
         delim = (csv.Sniffer().sniff(file.readlines()[1])).delimiter
     with open(fileout,'w', newline ="") as output:
-        output.write(str(len(sorted_nodes)) + "\n")
+        output.write(str(len(list_out)) + "\n")
         writer = csv.writer(output, delimiter=delim)
-        for intrctn in sorted_nodes:
+        for intrctn in list_out:
             writer.writerow(intrctn)
 
+clean_interactome("../example_files/toy_example_dirty.txt","fileout.txt")
 def get_degree(file,prot):
     """Returns the number of the degree of interactions of a node(prot)
 
@@ -77,7 +74,7 @@ def get_degree(file,prot):
     int
         Degree of interactions of node "prot"
     """
-    dict_nodes = rfi.read_interaction_file_dict(file)
+    dict_nodes = rif.read_interaction_file_dict(file)
     return len(dict_nodes[prot])
 
 def get_max_degree(file):
@@ -95,7 +92,7 @@ def get_max_degree(file):
     max_count : int
         Highest degree
     """
-    dict_nodes = rfi.read_interaction_file_dict(file)
+    dict_nodes = rif.read_interaction_file_dict(file)
     max_count = max(len(v) for v in dict_nodes.values())
     max_nodes = [k for k, v in dict_nodes.items() if len(v) == max_count]
     return max_nodes, max_count
@@ -113,7 +110,7 @@ def get_ave_degree(file):
     int
         Average degree of nodes in the network
     """
-    dict_nodes = rfi.read_interaction_file_dict(file)
+    dict_nodes = rif.read_interaction_file_dict(file)
     list_degree = []
     for node in dict_nodes:
         list_degree.append(len(dict_nodes[node]))
@@ -134,7 +131,7 @@ def count_degree(file,deg):
     int
         Number of nodes with a degree equal to deg
     """
-    dict_nodes = rfi.read_interaction_file_dict(file)
+    dict_nodes = rif.read_interaction_file_dict(file)
     exact_count = 0
     for node in dict_nodes:
         if len(dict_nodes[node]) == deg:
