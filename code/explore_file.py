@@ -58,7 +58,6 @@ def clean_interactome(filein,fileout):
         for intrctn in list_out:
             writer.writerow(intrctn)
 
-clean_interactome("../example_files/toy_example_dirty.txt","fileout.txt")
 def get_degree(file,prot):
     """Returns the number of the degree of interactions of a node(prot)
 
