@@ -1,7 +1,6 @@
 import pandas
 import numpy
 import os
-import timeit
 
 def read_interaction_file_dict(input_file):
     """Reads an input interaction network
@@ -45,10 +44,10 @@ def read_interaction_file_list(input_file):
     df = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
     list_node = []
     for i in range(len(df.index)):
-        if (df.loc[i,0], df.loc[i,1]) not in list_node:
-            if (df.loc[i,1],df.loc[i,0]) not in list_node:
-                list_node.append((df.loc[i,0], df.loc[i,1]))
-    return list_node
+        list_node.append((df.loc[i,0], df.loc[i,1]))
+    sorted_nodes = sorted(list(set(tuple(sorted(l)) for l in list_node)))
+    print(len(sorted_nodes))
+    return sorted_nodes
 
 def read_interaction_file_mat(input_file):
     """Reads an interaction file and creates an adjency matrix
@@ -69,8 +68,8 @@ def read_interaction_file_mat(input_file):
     list_node = sorted(int_dict.keys())
     adj_matrix = numpy.zeros((len(list_node), len(list_node)), dtype=int)
     for i in range(len(list_node)):
-        for key in int_dict[list_node[i]]:
-            adj_matrix[i][list_node.index(key)] = 1
+        for node in int_dict[list_node[i]]:
+            adj_matrix[i][list_node.index(node)] = 1
     return adj_matrix, list_node
 
 def read_interaction_file(input_file):

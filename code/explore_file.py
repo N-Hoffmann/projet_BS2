@@ -49,17 +49,17 @@ def clean_interactome(filein,fileout):
     df = pandas.read_csv(filein, sep = None, engine = 'python', skiprows=1, header=None)
     list_out = []
     for i in range(len(df.index)):
-        if (df.loc[i,0], df.loc[i,1]) not in list_out:
-            if (df.loc[i,1],df.loc[i,0]) not in list_out:
-                list_out.append((df.loc[i,0], df.loc[i,1]))
-    
-    # Find a better way to sniff delimiter ?
+        if df.loc[i,0] == df.loc[i,1]:
+            pass
+        else:
+            list_out.append((df.loc[i,0], df.loc[i,1]))
+    sorted_nodes = sorted(list(set(tuple(sorted(l)) for l in list_out)))
     with open(filein, 'r') as file:
         delim = (csv.Sniffer().sniff(file.readlines()[1])).delimiter
     with open(fileout,'w', newline ="") as output:
-        output.write(str(len(list_out)) + "\n")
+        output.write(str(len(sorted_nodes)) + "\n")
         writer = csv.writer(output, delimiter=delim)
-        for intrctn in list_out:
+        for intrctn in sorted_nodes:
             writer.writerow(intrctn)
 
 def get_degree(file,prot):
