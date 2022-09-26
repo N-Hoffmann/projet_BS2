@@ -1,11 +1,11 @@
 import pytest
 import os
+from pathlib import Path
 import read_interaction_file as rif
 import explore_file as ef
 
 explore_file = pytest.importorskip("explore_file")
-
-test_file = '../example_files/toy_example.txt'
+test_file = Path(__file__).parent / '../example_files/toy_example.txt'
 
 def test_count_vertices():
     assert ef.count_vertices(test_file) == 6
@@ -16,7 +16,7 @@ def test_count_edges():
 def test_clean_interactome():
     # Find a better way to create temp fileout.txt ?
     # Find a better way to assert ? tried filecmp
-    ef.clean_interactome("../example_files/toy_example_dirty.txt","test_out.txt")
+    ef.clean_interactome(Path(__file__).parent / "../example_files/toy_example_dirty.txt","test_out.txt")
     assert rif.read_interaction_file_list("../example_files/toy_example.txt") \
         == rif.read_interaction_file_list("test_out.txt") 
     os.remove("test_out.txt")

@@ -1,10 +1,10 @@
 import pytest
 import numpy
+from pathlib import Path
 import read_interaction_file as rif
 
 read_interaction_file = pytest.importorskip("read_interaction_file")
-
-test_file = '../example_files/toy_example.txt'
+test_file = Path(__file__).parent / '../example_files/toy_example.txt'
 
 def test_dict():
     result = rif.read_interaction_file_dict(test_file)
@@ -46,6 +46,9 @@ def test_read_interaction_file():
 
 def test_is_interaction_file():
     assert rif.is_interaction_file(test_file) == True
-    assert rif.is_interaction_file("../example_files/empty_file.csv") == False
-    assert rif.is_interaction_file("../example_files/wrong_first_line.csv") == False
-    assert rif.is_interaction_file("../example_files/wrong_columns.csv") == False
+    assert rif.is_interaction_file(Path(__file__).parent / \
+        "../example_files/empty_file.csv") == False
+    assert rif.is_interaction_file(Path(__file__).parent / \
+        "../example_files/wrong_first_line.csv") == False
+    assert rif.is_interaction_file(Path(__file__).parent / \
+        "../example_files/wrong_columns.csv") == False
