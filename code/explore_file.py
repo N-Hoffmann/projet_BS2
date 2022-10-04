@@ -17,7 +17,7 @@ def count_vertices(file):
         Number of vertices in file
     """
     df = pandas.read_csv(file, sep = None, engine = 'python', skiprows=1, header=None)
-    return len(df.index)
+    return len(set(numpy.concatenate(df.values)))
 
 def count_edges(file):
     """Returns the number of edges in a graph interaction file
@@ -33,10 +33,10 @@ def count_edges(file):
         Number of edges in file
     """
     df = pandas.read_csv(file, sep = None, engine = 'python', skiprows=1, header=None)
-    return len(set(numpy.concatenate(df.values)))
+    return len(df.index)
 
 def clean_interactome(filein,fileout):
-    """Reads and interaction file and writes a cleaned new interaction file
+    """Reads an interaction file and writes a cleaned new interaction file
     Removes redundant interactions and homodimers
 
     Parameters

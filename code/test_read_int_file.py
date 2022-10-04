@@ -8,7 +8,7 @@ test_file = Path(__file__).parent / '../example_files/toy_example.txt'
 
 def test_dict():
     result = rif.read_interaction_file_dict(test_file)
-    assert type(result) == dict
+    assert type(result) == dict,"result should be a dictionnary"
     assert len(result) == 6
     assert result == {'D': ['B', 'E', 'F'], 'B': ['A', 'C', 'D'], 'F': ['D'], \
         'A': ['B', 'C'], 'C': ['A', 'B'], 'E': ['D']}
