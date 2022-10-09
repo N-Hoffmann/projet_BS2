@@ -22,30 +22,24 @@ class Interactome:
     """
 
     def __init__(self,input_file):
-        self.input = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
-        self.dict = self.build_dict()
-        self.list = self.build_list()
-        self.protein = list(self.dict.keys())
-
-    def build_dict(self):
+        input = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
         dict_node = {}
-        for key in sorted(numpy.unique(numpy.concatenate(self.input.values))):
-            dict_node[key] = []
-        for i in range(len(self.input.index)):
-            if self.input.loc[i,1] not in dict_node[self.input.loc[i,0]]:
-                dict_node[self.input.loc[i,0]].append(self.input.loc[i,1])
-            if self.input.loc[i,0] not in dict_node[self.input.loc[i,1]]:
-                dict_node[self.input.loc[i,1]].append(self.input.loc[i,0])
-        return dict_node
-
-    def build_list(self):
         list_node = []
-        for i in range(len(self.input.index)):
-            list_node.append((self.input.loc[i,0], self.input.loc[i,1]))
-        sorted_nodes = sorted(list(set(tuple(sorted(l)) for l in list_node)))
-        return sorted_nodes
+
+        for key in sorted(numpy.unique(numpy.concatenate(input.values))):
+            dict_node[key] = []
+        for i in range(len(input.index)):
+            list_node.append((input.loc[i,0], input.loc[i,1]))
+            if input.loc[i,1] not in dict_node[input.loc[i,0]]:
+                dict_node[input.loc[i,0]].append(input.loc[i,1])
+            if input.loc[i,0] not in dict_node[input.loc[i,1]]:
+                dict_node[input.loc[i,1]].append(input.loc[i,0])
+        
+        self.dict = dict_node
+        self.list = sorted(list(set(tuple(sorted(l)) for l in list_node)))
+        self.protein = list(self.dict.keys())
     
-    def build_matrix(self):
+    def get_matrix(self):
         list_node = sorted(self.dict.keys())
         adj_matrix = numpy.zeros((len(list_node), len(list_node)), dtype=int)
         for i in range(len(list_node)):
@@ -54,7 +48,7 @@ class Interactome:
         return adj_matrix, list_node
 
     def count_edges(self):
-        return len(self.input)
+        return len(self.list)
     
     def count_vertices(self):
         return len(self.dict.keys())
@@ -125,9 +119,6 @@ class Interactome:
             Local clustering score for the protein
         """
         cnt_nghbr = len(self.dict[prot])
-        if cnt_nghbr == 1:
-            return 0
-        else:
-            list_nghbr = self.dict[prot]
-            len_interactions = len([tup for tup in self.list if tup[0] in list_nghbr and tup[1] in list_nghbr])
-            return (2*len_interactions) / (cnt_nghbr * (cnt_nghbr-1))
+        list_nghbr = self.dict[prot]
+        len_interactions = len([tup for tup in self.list if tup[0] in list_nghbr and tup[1] in list_nghbr])
+        return len_interactions / ((cnt_nghbr * (cnt_nghbr-1)) / 2)

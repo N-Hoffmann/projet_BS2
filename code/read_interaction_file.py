@@ -14,7 +14,7 @@ def read_interaction_file_dict(input_file):
     Returns
     -------
     dict_node : dict
-        Dictionnary containing nodes as key and interaction nodes as values
+        Dictionnary containing nodes as key and interacting nodes as values
     """
     df = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
     dict_node = {}

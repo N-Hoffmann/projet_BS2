@@ -10,8 +10,8 @@ def test_dict():
     result = rif.read_interaction_file_dict(test_file)
     assert type(result) == dict,"result should be a dictionnary"
     assert len(result) == 6
-    assert result == {'D': ['B', 'E', 'F'], 'B': ['A', 'C', 'D'], 'F': ['D'], \
-        'A': ['B', 'C'], 'C': ['A', 'B'], 'E': ['D']}
+    assert result == {'A': ['B', 'C'], 'B': ['A', 'C', 'D'], 'C': ['A', 'B'], \
+    'D': ['B', 'E', 'F'], 'E': ['D'], 'F': ['D']}
 
 def test_list():
     result = rif.read_interaction_file_list(test_file)
