@@ -22,9 +22,9 @@ class Interactome:
         List of all proteins in the network
     """
     def __init__(self,input_file):
-        self.input = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
-        if self.is_interaction_file() == False:
+        if self.is_interaction_file(input_file) == False:
             raise Exception("The input file is not in a valid PPI network file format")
+        self.input = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
         self.dict = self.build_dict()
         self.list = self.build_list()
         self.protein = list(self.dict.keys())
@@ -148,7 +148,7 @@ class Interactome:
             for intrctn in list_out:
                 writer.writerow(intrctn)
 
-    def is_interaction_file(self):
+    def is_interaction_file(self,input_file):
         """Checks if input file is in a correct interaction file format
         Checks if input file is not empty
         Checks if first line is an integer and is the correct number of connectors
@@ -164,15 +164,16 @@ class Interactome:
         True : boolean
         True if input file is a correct interaction file
         """
-        if self.input.empty == True:
+        if os.stat(input_file).st_size == 0:
             return False
-        # with open(self.input) as input:
-        #     firstline = input.readlines()[0].rstrip()
-        # if firstline.isdigit() == False:
-        #     return False
-        # if int(firstline) != len(self.input):
-        #     return False
-        if len(self.input.columns) != 2:
+        with open(input_file) as input:
+            firstline = input.readlines()[0].rstrip()
+            if firstline.isdigit() == False:
+                return False
+        df = pandas.read_csv(input_file, sep = None, engine = 'python',skiprows=1, header=None)
+        if int(firstline) != len(df):
+            return False
+        if len(df.columns) != 2:
             return False
         return True
 
