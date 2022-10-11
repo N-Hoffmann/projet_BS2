@@ -8,7 +8,7 @@ def count_vertices(file):
 
     Parameters
     ----------
-    file : .txt
+    file : str
         Path to .txt file containing two interacting nodes on each line
 
     Returns
@@ -24,7 +24,7 @@ def count_edges(file):
 
     Parameters
     ----------
-    file : .txt
+    file : str
         Path to .txt file containing two interacting nodes on each line
 
     Returns
@@ -41,9 +41,9 @@ def clean_interactome(filein,fileout):
 
     Parameters
     ----------
-    filein : .txt
+    filein : str
         Path to .txt file containing two interacting nodes on each line
-    fileout : .txt
+    fileout : str
         Path to new cleaned .txt file
     """
     list_out = rif.read_interaction_file_list(filein)
@@ -63,7 +63,7 @@ def get_degree(file,prot):
 
     Parameters
     ----------
-    file : .txt
+    file : str
         Path to .txt file containing two interacting nodes on each line
     prot : str
         Name of a protein in the network
@@ -81,7 +81,7 @@ def get_max_degree(file):
 
     Parameters
     ----------
-    file : file : .txt
+    file : file : str
         Path to .txt file containing two interacting nodes on each line
 
     Returns
@@ -101,7 +101,7 @@ def get_ave_degree(file):
 
     Parameters
     ----------
-    file : .txt
+    file : str
         Path to .txt file containing two interacting nodes on each line
 
     Returns
@@ -120,7 +120,7 @@ def count_degree(file,deg):
 
     Parameters
     ----------
-    file : .txt
+    file : str
         Path to .txt file containing two interacting nodes on each line
     deg : int
         Degree
@@ -143,7 +143,7 @@ def histogram_degree(file,dmin,dmax):
 
     Parameters
     ----------
-    file : .csv
+    file : str
         Path to .csv file containing two interacting nodes on each line
     dmin : int
         Lower bound of degree range

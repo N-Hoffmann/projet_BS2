@@ -8,7 +8,7 @@ def read_interaction_file_dict(input_file):
 
     Parameters
     ----------
-    input_file : .txt
+    input_file : str
         Path to .txt file containing two interacting nodes on each line
 
     Returns
@@ -33,7 +33,7 @@ def read_interaction_file_list(input_file):
 
     Parameters
     ----------
-    input_file : .txt
+    input_file : str
         Path to .txt file containing two interacting nodes on each line
     
     Returns
@@ -53,7 +53,7 @@ def read_interaction_file_mat(input_file):
 
     Parameters
     ----------
-    input_file : .txt
+    input_file : str
         Path to .txt file containing two interacting nodes on each line 
 
     Returns
@@ -78,7 +78,7 @@ def read_interaction_file(input_file):
 
     Parameters
     ----------
-    input_file : .txt
+    input_file : str
         Path to .txt file containing two interacting nodes on each line
 
     Returns
@@ -105,7 +105,7 @@ def is_interaction_file(input_file):
 
     Parameters
     ----------
-    input_file : .txt file
+    input_file : str
         Path to .txt file containing two interacting nodes on each line
 
     Returns
