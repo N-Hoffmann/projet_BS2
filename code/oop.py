@@ -304,7 +304,7 @@ class Interactome:
             len_interactions = len([tup for tup in self.list if tup[0] in list_nghbr and tup[1] in list_nghbr])
             return (2*len_interactions) / (cnt_nghbr * (cnt_nghbr-1))
 
-    def random_generator(self,q):
+    def ER_generator(self,q):
         """Randomly generates vertexes between edges using the Erdős-Rényi model
 
         Parameters
@@ -322,11 +322,11 @@ class Interactome:
         ValueError
             q must be between 0 and 1
         """
+        if q > 1 or q < 0:
+            raise ValueError("q must be between 0 and 1")
         protein_dict = {}
         for key in self.protein:
             protein_dict[key] = []
-        if q > 1 or q < 0:
-            raise ValueError("q must be between 0 and 1")
         for protein_1 in self.protein:
             for protein_2 in self.protein:
                 if protein_1 == protein_2:
@@ -349,18 +349,20 @@ class Interactome:
         protein_dict = {}
         for key in self.protein:
             protein_dict[key] = []
+
         random_vertex = random.sample(self.protein, k=2)
         protein_dict[random_vertex[0]].append(random_vertex[1])
         protein_dict[random_vertex[1]].append(random_vertex[0])
+
         total_degree = 0
         for protein in protein_dict:
             total_degree += len(protein_dict[protein])
 
         for protein_1 in random.sample(self.protein, len(self.protein)):
-            for protein_2 in random.sample(self.protein, len(self.protein)):
+            for protein_2 in self.protein:
                 if protein_1 == protein_2:
                     continue
-                if random.random() < (self.get_degree(protein_1) / total_degree):
+                if random.random() < (len(protein_dict[protein_1]) / total_degree):
                     if protein_2 not in protein_dict[protein_1]:
                         protein_dict[protein_1].append(protein_2)
                     if protein_1 not in protein_dict[protein_2]:
@@ -371,14 +373,12 @@ class Interactome:
                 total_degree += len(protein_dict[protein])
         return protein_dict
 
-# if __name__ == "__main__":
-#     ppi = Interactome("../example_files/toy_example.txt")
-#     import networkx as nx
-#     import matplotlib.pyplot as plt
-#     #ppi_rand = ppi.random_generator(0.5)
-#     ppi_rand = ppi.BA_generator()
-#     print(ppi_rand)
-#     g=nx.DiGraph(ppi_rand)
-#     nx.draw(g, with_labels = True)
-#     plt.draw()
-#     plt.show()
+ppi = Interactome("../example_files/toy_example.txt")
+import networkx as nx
+import matplotlib.pyplot as plt
+#ppi_rand = ppi.ER_generator(0.5)
+ppi_ba = ppi.BA_generator()
+g=nx.Graph(ppi_ba)
+nx.draw(g, with_labels = True)
+plt.draw()
+plt.show()
