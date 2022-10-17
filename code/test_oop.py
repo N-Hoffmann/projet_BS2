@@ -14,6 +14,9 @@ def test_attributes():
     assert test_ppi.list == [('A', 'B'), ('A','C'), ('B', 'C'), ('B', 'D'), ('D', 'E'), ('D', 'F')]
     assert test_ppi.protein == ['A', 'B', 'C', 'D', 'E', 'F']
 
+def test_format():
+    pass
+
 def test_methods():
     assert test_ppi.count_edges() == 6
     assert test_ppi.count_vertices() == 6
