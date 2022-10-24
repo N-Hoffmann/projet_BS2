@@ -427,11 +427,11 @@ class Interactome:
             Path to outfile
         """
         cc_list = self.find_cc()
-        with open(fileout,'w',newline="") as output:
-            writer = csv.writer(output, delimiter=" ")
+        with open(fileout,'w') as output:
             for i in range(len(cc_list)):
-                line = len(cc_list[i]),cc_list[i]
-                writer.writerow(line)
+                line = len(cc_list[i]), cc_list[i]
+                line = " ".join(map(str,line))
+                output.write(line +"\n")
 
     def extract_cc(self, prot):
         """Returns all the edges of the connected component where prot is
@@ -479,11 +479,11 @@ if __name__ == "__main__":
     # nx.draw(g, with_labels = True)
     # plt.draw()
     # plt.show()
-    # g=nx.Graph(ppi.dict)
-    # nx.draw(g, with_labels = True)
-    # plt.draw()
-    # plt.show()
-    # print(ppi.find_cc())
-    # print(ppi.compute_cc())
-    # print(ppi.extract_cc("A"))
-    ppi.write_cc("fileout.txt")
+    g=nx.Graph(ppi.dict)
+    nx.draw(g, with_labels = True)
+    plt.draw()
+    plt.show()
+    print(ppi.find_cc())
+    print(ppi.compute_cc())
+    print(ppi.extract_cc("A"))
+    #ppi.write_cc("fileout.txt")
