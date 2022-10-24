@@ -304,81 +304,186 @@ class Interactome:
             len_interactions = len([tup for tup in self.list if tup[0] in list_nghbr and tup[1] in list_nghbr])
             return (2*len_interactions) / (cnt_nghbr * (cnt_nghbr-1))
 
-    def ER_generator(self,q):
+    def grapher(self,p):
         """Randomly generates vertexes between edges using the Erdős-Rényi model
 
         Parameters
         ----------
-        q : float
+        p : float
             Probability of a vertex existing between two edges
 
         Returns
         -------
-        protein_dict : dict
+        ergraph_dict : dict
             Dictionary
 
         Raises
         ------
         ValueError
-            q must be between 0 and 1
+            p must be between 0 and 1
         """
-        if q > 1 or q < 0:
-            raise ValueError("q must be between 0 and 1")
-        protein_dict = {}
+        if p > 1 or p < 0:
+            raise ValueError("p must be between 0 and 1")
+        ergraph_dict = {}
         for key in self.protein:
-            protein_dict[key] = []
+            ergraph_dict[key] = []
         for protein_1 in self.protein:
             for protein_2 in self.protein:
                 if protein_1 == protein_2:
                     continue
-                if random.random() < q:
-                    if protein_2 not in protein_dict[protein_1]:
-                        protein_dict[protein_1].append(protein_2)
-                    if protein_1 not in protein_dict[protein_2]:
-                        protein_dict[protein_2].append(protein_1)
-        return protein_dict
+                if random.random() < p:
+                    if protein_2 not in ergraph_dict[protein_1]:
+                        ergraph_dict[protein_1].append(protein_2)
+                    if protein_1 not in ergraph_dict[protein_2]:
+                        ergraph_dict[protein_2].append(protein_1)
+        return ergraph_dict
 
-    def BA_generator(self):
+    def graphba(self):
         """Randomly generates vertexes between edges using the Barabási–Albert model
 
         Returns
         -------
-        protein_dict
+        bagraph_dict
             Dictionary
         """
-        protein_dict = {}
+        bagraph_dict = {}
         for key in self.protein:
-            protein_dict[key] = []
+            bagraph_dict[key] = []
 
         random_vertex = random.sample(self.protein, k=2)
-        protein_dict[random_vertex[0]].append(random_vertex[1])
-        protein_dict[random_vertex[1]].append(random_vertex[0])
+        bagraph_dict[random_vertex[0]].append(random_vertex[1])
+        bagraph_dict[random_vertex[1]].append(random_vertex[0])
 
         total_degree = 0
-        for protein in protein_dict:
-            total_degree += len(protein_dict[protein])
+        for protein in bagraph_dict:
+            total_degree += len(bagraph_dict[protein])
 
         for protein_1 in random.sample(self.protein, len(self.protein)):
             for protein_2 in self.protein:
                 if protein_1 == protein_2:
                     continue
-                if random.random() < (len(protein_dict[protein_1]) / total_degree):
-                    if protein_2 not in protein_dict[protein_1]:
-                        protein_dict[protein_1].append(protein_2)
-                    if protein_1 not in protein_dict[protein_2]:
-                        protein_dict[protein_2].append(protein_1)
+                if random.random() < (len(bagraph_dict[protein_1]) / total_degree):
+                    if protein_2 not in bagraph_dict[protein_1]:
+                        bagraph_dict[protein_1].append(protein_2)
+                    if protein_1 not in bagraph_dict[protein_2]:
+                        bagraph_dict[protein_2].append(protein_1)
 
             total_degree = 0
-            for protein in protein_dict:
-                total_degree += len(protein_dict[protein])
-        return protein_dict
+            for protein in bagraph_dict:
+                total_degree += len(bagraph_dict[protein])
 
-ppi = Interactome("../example_files/toy_example.txt")
-import networkx as nx
-import matplotlib.pyplot as plt
-#ppi_rand = ppi.ER_generator(0.5)
-ppi_ba = ppi.BA_generator()
-g=nx.Graph(ppi_ba)
-nx.draw(g, with_labels = True)
-plt.draw()
-plt.show()
+        return bagraph_dict
+
+    def find_cc(self):
+        """Finds connected components in the graph
+
+        Returns
+        -------
+        list
+            List of connected components in the graph
+        """
+        visited = {}
+        for protein in self.protein:
+            visited[protein] = False
+        cc_list=[]
+
+        def parse_nghbr(to_visit,edge,visited):
+            visited[edge] = True
+            to_visit.append(edge)
+            for adj_edge in self.dict[edge]:
+                if visited[adj_edge] == False:
+                    to_visit = parse_nghbr(to_visit,adj_edge,visited)
+            return to_visit
+
+        for protein in self.protein:
+            if visited[protein] == False:
+                to_visit = []
+                cc_list.append(parse_nghbr(to_visit,protein,visited))
+        return cc_list
+
+    def count_cc(self):
+        """Finds connected components in the graph and returns their size and the total
+        number of connected components
+
+        Returns
+        -------
+        int
+            Total number of CCs and their size
+        """
+        cc_list = self.find_cc()
+        len_list = []
+        for cc in cc_list:
+            len_list.append(len(cc))
+        return len(cc_list), len_list
+
+    def write_cc(self,fileout):
+        """Writes the different connected components of the graph in an output file
+        Each line represents a connected component, with its size as the firs element and its 
+        edges as the second
+
+        Parameters
+        ----------
+        fileout : str
+            Path to outfile
+        """
+        cc_list = self.find_cc()
+        with open(fileout,'w',newline="") as output:
+            writer = csv.writer(output, delimiter=" ")
+            for i in range(len(cc_list)):
+                line = len(cc_list[i]),cc_list[i]
+                writer.writerow(line)
+
+    def extract_cc(self, prot):
+        """Returns all the edges of the connected component where prot is
+
+        Parameters
+        ----------
+        prot : str
+            Protein for which we search the edges of its connected components
+
+        Returns
+        -------
+        list
+            List of all the edges of the connected component
+        """
+        cc_list = self.find_cc()
+        for cc in cc_list:
+            if prot in cc:
+                return cc
+
+    def compute_cc(self):
+        """Computes the connected component group for each protein in the graph and returns the 
+        group index in a list
+
+        Returns
+        -------
+        lcc : list
+            List containing the connect component group index for each protein in the graph
+        """
+        cc_list = self.find_cc()
+        lcc = [0]*len(self.protein)
+        for protein in self.protein:
+            for cc in cc_list:
+                if protein in cc:
+                    lcc[self.protein.index(protein)] = cc_list.index(cc)
+        return lcc
+
+if __name__ == "__main__":
+    ppi = Interactome("../example_files/toy2.txt")
+    import networkx as nx
+    import matplotlib.pyplot as plt
+    # ppi_rand = ppi.grapher(0.3)
+    # g=nx.Graph(ppi_rand)
+    # ppi_ba = ppi.graphba()
+    # g=nx.Graph(ppi_ba)
+    # nx.draw(g, with_labels = True)
+    # plt.draw()
+    # plt.show()
+    # g=nx.Graph(ppi.dict)
+    # nx.draw(g, with_labels = True)
+    # plt.draw()
+    # plt.show()
+    # print(ppi.find_cc())
+    # print(ppi.compute_cc())
+    # print(ppi.extract_cc("A"))
+    ppi.write_cc("fileout.txt")
