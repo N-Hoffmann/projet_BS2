@@ -24,7 +24,7 @@ class Interactome:
     """
     def __init__(self,input_file):
         if self.is_interaction_file(input_file) == False:
-            raise Exception("The input file is not in a valid PPI network file format")
+            raise ValueError("The input file is not in a valid PPI network file format")
         self.input = pandas.read_csv(input_file, sep = None, engine = 'python', skiprows=1, header=None)
         self.dict = self.build_dict()
         self.list = self.build_list()
@@ -191,7 +191,7 @@ class Interactome:
         Returns
         -------
         int
-        Degree of interactions of node "prot"
+            Degree of interactions of node "prot"
         """
         return len(self.dict[prot])
     
@@ -206,9 +206,9 @@ class Interactome:
         Returns
         -------
         max_nodes : list
-        List of nodes with the highest degree
+            List of nodes with the highest degree
         max_count : int
-        Highest degree
+            Highest degree
         """
         max_count = max(len(v) for v in self.dict.values())
         max_nodes = [k for k, v in self.dict.items() if len(v) == max_count]
@@ -225,7 +225,7 @@ class Interactome:
         Returns
         -------
         int
-        Average degree of nodes in the network
+            Average degree of nodes in the network
         """
         list_degree = []
         for node in self.dict:
@@ -245,7 +245,7 @@ class Interactome:
         Returns
         -------
         int
-        Number of nodes with a degree equal to deg
+            Number of nodes with a degree equal to deg
         """
         exact_count = 0
         for node in self.dict:
@@ -262,9 +262,9 @@ class Interactome:
         file : str
         Path to .csv file containing two interacting nodes on each line
         dmin : int
-        Lower bound of degree range
+            Lower bound of degree range
         dmax : int
-        Upper bound of degree range
+            Upper bound of degree range
         """
         dict_degrees = {}
         for deg in range(dmin,dmax+1):
@@ -305,12 +305,12 @@ class Interactome:
             return (2*len_interactions) / (cnt_nghbr * (cnt_nghbr-1))
 
     def grapher(self,p):
-        """Randomly generates vertexes between edges using the Erdős-Rényi model
+        """Randomly generates vertexes between vertices using the Erdős-Rényi model
 
         Parameters
         ----------
         p : float
-            Probability of a vertex existing between two edges
+            Probability of a vertex existing between two vertices
 
         Returns
         -------
@@ -339,7 +339,7 @@ class Interactome:
         return ergraph_dict
 
     def graphba(self):
-        """Randomly generates vertexes between edges using the Barabási–Albert model
+        """Randomly generates edges between vertices using the Barabási–Albert model
 
         Returns
         -------
@@ -419,7 +419,7 @@ class Interactome:
     def write_cc(self,fileout):
         """Writes the different connected components of the graph in an output file
         Each line represents a connected component, with its size as the firs element and its 
-        edges as the second
+        vertices as the second
 
         Parameters
         ----------
@@ -434,17 +434,17 @@ class Interactome:
                 output.write(line +"\n")
 
     def extract_cc(self, prot):
-        """Returns all the edges of the connected component where prot is
+        """Returns all the vertices of the connected component where prot is
 
         Parameters
         ----------
         prot : str
-            Protein for which we search the edges of its connected components
+            Protein for which we search the vertices of its connected components
 
         Returns
         -------
         list
-            List of all the edges of the connected component
+            List of all the vertices of the connected component
         """
         cc_list = self.find_cc()
         for cc in cc_list:
@@ -462,10 +462,10 @@ class Interactome:
         """
         cc_list = self.find_cc()
         lcc = [0]*len(self.protein)
-        for protein in self.protein:
+        for prot in self.protein:
             for cc in cc_list:
-                if protein in cc:
-                    lcc[self.protein.index(protein)] = cc_list.index(cc)
+                if prot in cc:
+                    lcc[self.protein.index(prot)] = cc_list.index(cc)
         return lcc
 
 if __name__ == "__main__":
@@ -484,6 +484,8 @@ if __name__ == "__main__":
     plt.draw()
     plt.show()
     print(ppi.find_cc())
-    print(ppi.compute_cc())
+    print(ppi.count_cc())
     print(ppi.extract_cc("A"))
+    print(ppi.compute_cc())
+    print(ppi.protein)
     #ppi.write_cc("fileout.txt")
