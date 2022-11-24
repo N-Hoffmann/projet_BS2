@@ -56,23 +56,23 @@ class Interactome:
 
     def build_list(self):
         """Reads an input interaction network
-        Returns a list containing interacting nodes as tuples
+        Returns a list containing interacting vertices as tuples
 
         Parameters
         ----------
         input_file : str
-        Path to .txt file containing two interacting nodes on each line
+        Path to .txt file containing two interacting vertices on each line
 
         Returns
         -------
-        list_node : list
-        List containing interacting nodes as tuples
+        list_vertex : list
+        List containing interacting vertices as tuples
         """
-        list_node = []
+        list_vertex = []
         for i in range(len(self.input.index)):
-            list_node.append((self.input.loc[i,0], self.input.loc[i,1]))
-        sorted_nodes = sorted(list(set(tuple(sorted(l)) for l in list_node)))
-        return sorted_nodes
+            list_vertex.append((self.input.loc[i,0], self.input.loc[i,1]))
+        sorted_vertices = sorted(list(set(tuple(sorted(l)) for l in list_vertex)))
+        return sorted_vertices
     
     def build_matrix(self):
         """Reads an interaction file and creates an adjency matrix
@@ -80,21 +80,21 @@ class Interactome:
         Parameters
         ----------
         input_file : str
-        Path to .txt file containing two interacting nodes on each line 
+        Path to .txt file containing two interacting vertices on each line 
 
         Returns
         -------
         adj_matrix : array
         Adjency matrix
-        list_node : list
-        Sorted list of nodes used to create the adjency matrix
+        list_vertex : list
+        Sorted list of vertices used to create the adjency matrix
         """
-        list_node = sorted(self.dict.keys())
-        adj_matrix = numpy.zeros((len(list_node), len(list_node)), dtype=int)
-        for i in range(len(list_node)):
-            for node in self.dict[list_node[i]]:
-                adj_matrix[i][list_node.index(node)] = 1
-        return adj_matrix, list_node
+        list_vertex = sorted(self.dict.keys())
+        adj_matrix = numpy.zeros((len(list_vertex), len(list_vertex)), dtype=int)
+        for i in range(len(list_vertex)):
+            for node in self.dict[list_vertex[i]]:
+                adj_matrix[i][list_vertex.index(node)] = 1
+        return adj_matrix, list_vertex
 
     def count_edges(self):
         """Returns the number of edges in a graph interaction file
@@ -109,7 +109,7 @@ class Interactome:
         int
         Number of edges in file
         """
-        return len(self.input)
+        return len(self.list)
     
     def count_vertices(self):
         """Returns the number of vertices in a graph interaction file
@@ -196,81 +196,81 @@ class Interactome:
         return len(self.dict[prot])
     
     def get_max_degree(self):
-        """Returns the nodes with the highest degree and its corresponding degree
+        """Returns the vertices with the highest degree and its corresponding degree
 
         Parameters
         ----------
         file : file : str
-        Path to .txt file containing two interacting nodes on each line
+        Path to .txt file containing two interacting vertices on each line
 
         Returns
         -------
-        max_nodes : list
-            List of nodes with the highest degree
+        list_max_vertex : list
+            List of vertices with the highest degree
         max_count : int
             Highest degree
         """
-        max_count = max(len(v) for v in self.dict.values())
-        max_nodes = [k for k, v in self.dict.items() if len(v) == max_count]
-        return max_nodes, max_count
+        int_max_count = max(len(v) for v in self.dict.values())
+        list_max_vertex = [k for k, v in self.dict.items() if len(v) == int_max_count]
+        return list_max_vertex, int_max_count
 
     def get_ave_degree(self):
-        """Returns the average degree of nodes in the interaction network
+        """Returns the average degree of vertices in the interaction network
 
         Parameters
         ----------
         file : str
-        Path to .txt file containing two interacting nodes on each line
+        Path to .txt file containing two interacting vertices on each line
 
         Returns
         -------
         int
-            Average degree of nodes in the network
+            Average degree of vertices in the network
         """
         list_degree = []
-        for node in self.dict:
-            list_degree.append(len(self.dict[node]))
+        for vertex in self.dict:
+            list_degree.append(len(self.dict[vertex]))
         return round(sum(list_degree) / len(list_degree), 1)
 
     def count_degree(self,deg):
-        """Returns the number of nodes in network with a degree equal to deg
+        """Returns the number of vertices in network with a degree equal to deg
 
         Parameters
         ----------
         file : str
-        Path to .txt file containing two interacting nodes on each line
+        Path to .txt file containing two interacting vertices on each line
         deg : int
         Degree
 
         Returns
         -------
         int
-            Number of nodes with a degree equal to deg
+            Number of vertices with a degree equal to deg
         """
-        exact_count = 0
+        int_exact_count = 0
         for node in self.dict:
             if len(self.dict[node]) == deg:
-                exact_count += 1
-        return exact_count
+                int_exact_count += 1
+        return int_exact_count
 
     def histogram_degree(self,dmin,dmax):
-        """Prints an histogram with number of nodes having each degree
+        """Prints an histogram with number of vertices having each degree
         Degrees are in the range of dmin,dmax
 
         Parameters
         ----------
         file : str
-        Path to .csv file containing two interacting nodes on each line
+        Path to .csv file containing two interacting vertices on each line
         dmin : int
             Lower bound of degree range
         dmax : int
             Upper bound of degree range
         """
         dict_degrees = {}
-        for deg in range(dmin,dmax+1):
-            cnt_degree = self.count_degree(deg)
-            dict_degrees[deg] = cnt_degree
-            print(deg,"","*"*cnt_degree)
+        for int_deg in range(dmin,dmax+1):
+            cnt_degree = self.count_degree(int_deg)
+            dict_degrees[int_deg] = cnt_degree
+            print(int_deg,"","*"*cnt_degree)
         return dict_degrees
 
     def density(self):
@@ -296,13 +296,13 @@ class Interactome:
         int
             Local clustering score for the protein
         """
-        cnt_nghbr = len(self.dict[prot])
-        if cnt_nghbr == 1:
+        int_cnt_nghbr = len(self.dict[prot])
+        if int_cnt_nghbr == 1:
             return 0
         else:
             list_nghbr = self.dict[prot]
-            len_interactions = len([tup for tup in self.list if tup[0] in list_nghbr and tup[1] in list_nghbr])
-            return (2*len_interactions) / (cnt_nghbr * (cnt_nghbr-1))
+            int_len_interactions = len([tup for tup in self.list if tup[0] in list_nghbr and tup[1] in list_nghbr])
+            return (2*int_len_interactions) / (int_cnt_nghbr * (int_cnt_nghbr-1))
 
     def grapher(self,p):
         """Randomly generates vertexes between vertices using the Erdős-Rényi model
@@ -325,6 +325,7 @@ class Interactome:
         if p > 1 or p < 0:
             raise ValueError("p must be between 0 and 1")
         ergraph_dict = {}
+        ergraph_list = []
         for key in self.protein:
             ergraph_dict[key] = []
         for protein_1 in self.protein:
@@ -336,7 +337,10 @@ class Interactome:
                         ergraph_dict[protein_1].append(protein_2)
                     if protein_1 not in ergraph_dict[protein_2]:
                         ergraph_dict[protein_2].append(protein_1)
-        return ergraph_dict
+                    if [protein_1, protein_2] not in ergraph_list and [protein_2, protein_1] not in ergraph_list:
+                        ergraph_list.append((protein_1, protein_2))
+        self.dict = ergraph_dict
+        self.list = ergraph_list
 
     def graphba(self):
         """Randomly generates edges between vertices using the Barabási–Albert model
@@ -347,6 +351,7 @@ class Interactome:
             Dictionary
         """
         bagraph_dict = {}
+        bagraph_list = []
         for key in self.protein:
             bagraph_dict[key] = []
 
@@ -367,12 +372,15 @@ class Interactome:
                         bagraph_dict[protein_1].append(protein_2)
                     if protein_1 not in bagraph_dict[protein_2]:
                         bagraph_dict[protein_2].append(protein_1)
+                    if [protein_1, protein_2] not in bagraph_list and [protein_2, protein_1] not in bagraph_list:
+                        bagraph_list.append((protein_1, protein_2))
 
             total_degree = 0
             for protein in bagraph_dict:
                 total_degree += len(bagraph_dict[protein])
 
-        return bagraph_dict
+        self.dict = bagraph_dict
+        self.list = bagraph_list
 
     def find_cc(self):
         """Finds connected components in the graph
@@ -382,24 +390,24 @@ class Interactome:
         list
             List of connected components in the graph
         """
-        visited = {}
+        dict_visited = {}
         for protein in self.protein:
-            visited[protein] = False
-        cc_list=[]
+            dict_visited[protein] = False
+        list_cc=[]
 
-        def parse_nghbr(to_visit,edge,visited):
-            visited[edge] = True
+        def parse_nghbr(to_visit,edge,dict_visited):
+            dict_visited[edge] = True
             to_visit.append(edge)
             for adj_edge in self.dict[edge]:
-                if visited[adj_edge] == False:
-                    to_visit = parse_nghbr(to_visit,adj_edge,visited)
+                if dict_visited[adj_edge] == False:
+                    to_visit = parse_nghbr(to_visit,adj_edge,dict_visited)
             return to_visit
 
         for protein in self.protein:
-            if visited[protein] == False:
+            if dict_visited[protein] == False:
                 to_visit = []
-                cc_list.append(parse_nghbr(to_visit,protein,visited))
-        return cc_list
+                list_cc.append(parse_nghbr(to_visit,protein,dict_visited))
+        return list_cc
 
     def count_cc(self):
         """Finds connected components in the graph and returns their size and the total
@@ -410,11 +418,11 @@ class Interactome:
         int
             Total number of CCs and their size
         """
-        cc_list = self.find_cc()
-        len_list = []
-        for cc in cc_list:
-            len_list.append(len(cc))
-        return len(cc_list), len_list
+        list_cc = self.find_cc()
+        list_len = []
+        for cc in list_cc:
+            list_len.append(len(cc))
+        return len(list_cc), list_len
 
     def write_cc(self,fileout):
         """Writes the different connected components of the graph in an output file
@@ -426,10 +434,10 @@ class Interactome:
         fileout : str
             Path to outfile
         """
-        cc_list = self.find_cc()
+        list_cc = self.find_cc()
         with open(fileout,'w') as output:
-            for i in range(len(cc_list)):
-                line = len(cc_list[i]), cc_list[i]
+            for i in range(len(list_cc)):
+                line = len(list_cc[i]), list_cc[i]
                 line = " ".join(map(str,line))
                 output.write(line +"\n")
 
@@ -446,8 +454,8 @@ class Interactome:
         list
             List of all the vertices of the connected component
         """
-        cc_list = self.find_cc()
-        for cc in cc_list:
+        list_cc = self.find_cc()
+        for cc in list_cc:
             if prot in cc:
                 return cc
 
@@ -457,35 +465,49 @@ class Interactome:
 
         Returns
         -------
-        lcc : list
+        list_lcc : list
             List containing the connect component group index for each protein in the graph
         """
-        cc_list = self.find_cc()
-        lcc = [0]*len(self.protein)
+        list_cc = self.find_cc()
+        list_lcc = [0]*len(self.protein)
         for prot in self.protein:
-            for cc in cc_list:
+            for cc in list_cc:
                 if prot in cc:
-                    lcc[self.protein.index(prot)] = cc_list.index(cc)
-        return lcc
+                    list_lcc[self.protein.index(prot)] = list_cc.index(cc)
+        return list_lcc
 
 if __name__ == "__main__":
-    ppi = Interactome("../example_files/toy2.txt")
+    ppi = Interactome("../example_files/toy_example.txt")
     import networkx as nx
     import matplotlib.pyplot as plt
-    # ppi_rand = ppi.grapher(0.3)
+    # ppi_rand = ppi.grapher(0.5)
     # g=nx.Graph(ppi_rand)
-    # ppi_ba = ppi.graphba()
-    # g=nx.Graph(ppi_ba)
-    # nx.draw(g, with_labels = True)
-    # plt.draw()
-    # plt.show()
+    ppi.graphba()
     g=nx.Graph(ppi.dict)
     nx.draw(g, with_labels = True)
     plt.draw()
     plt.show()
+    # g=nx.Graph(ppi.dict)
+    # nx.draw(g, with_labels = True)
+    # plt.draw()
+    # plt.show()
     print(ppi.find_cc())
     print(ppi.count_cc())
     print(ppi.extract_cc("A"))
     print(ppi.compute_cc())
     print(ppi.protein)
     #ppi.write_cc("fileout.txt")
+
+
+    # ppi = Interactome("../example_files/toy2.txt")
+    # print("Init dict",ppi.dict)
+    # print("Init list",ppi.list)
+    # ppi.grapher(0.5)
+    # print("er dict",ppi.dict)
+    # print("er list", ppi.list)
+    # print(ppi.protein)
+    # print(ppi.count_cc())
+    # print(ppi.find_cc())
+    # print(ppi.extract_cc("B"))
+    
+    # print(ppi.compute_cc())
