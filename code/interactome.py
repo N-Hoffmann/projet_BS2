@@ -337,8 +337,9 @@ class Interactome:
                         ergraph_dict[protein_1].append(protein_2)
                     if protein_1 not in ergraph_dict[protein_2]:
                         ergraph_dict[protein_2].append(protein_1)
-                    if [protein_1, protein_2] not in ergraph_list and [protein_2, protein_1] not in ergraph_list:
+                    if (protein_1, protein_2) not in ergraph_list and (protein_2, protein_1) not in ergraph_list:
                         ergraph_list.append((protein_1, protein_2))
+
         self.dict = ergraph_dict
         self.list = ergraph_list
 
@@ -372,7 +373,7 @@ class Interactome:
                         bagraph_dict[protein_1].append(protein_2)
                     if protein_1 not in bagraph_dict[protein_2]:
                         bagraph_dict[protein_2].append(protein_1)
-                    if [protein_1, protein_2] not in bagraph_list and [protein_2, protein_1] not in bagraph_list:
+                    if (protein_1, protein_2) not in bagraph_list and (protein_2, protein_1) not in bagraph_list:
                         bagraph_list.append((protein_1, protein_2))
 
             total_degree = 0
