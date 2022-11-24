@@ -34,13 +34,3 @@ def test_cc():
     assert test_ppi.count_cc() == (3, [6, 2, 3])
     assert test_ppi.find_cc() == [['A', 'G', 'C', 'D', 'E', 'F'], ['B', 'H'], ['I', 'J', 'K']]
     assert test_ppi.extract_cc("B") == ['B', 'H']
-
-
-# def test_er():
-#     avg_degree = [0] * 1000
-#     for i in range(1000):
-#         test_ppi = interactome.Interactome(test_file)
-#         test_ppi.grapher(0.5)
-#         avg_degree[i] = test_ppi.get_ave_degree()
-#     plt.hist(avg_degree, edgecolor = "black", bins=50)
-#     plt.show()

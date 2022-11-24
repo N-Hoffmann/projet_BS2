@@ -475,39 +475,3 @@ class Interactome:
                 if prot in cc:
                     list_lcc[self.protein.index(prot)] = list_cc.index(cc)
         return list_lcc
-
-if __name__ == "__main__":
-    ppi = Interactome("../example_files/toy_example.txt")
-    import networkx as nx
-    import matplotlib.pyplot as plt
-    # ppi_rand = ppi.grapher(0.5)
-    # g=nx.Graph(ppi_rand)
-    ppi.graphba()
-    g=nx.Graph(ppi.dict)
-    nx.draw(g, with_labels = True)
-    plt.draw()
-    plt.show()
-    # g=nx.Graph(ppi.dict)
-    # nx.draw(g, with_labels = True)
-    # plt.draw()
-    # plt.show()
-    print(ppi.find_cc())
-    print(ppi.count_cc())
-    print(ppi.extract_cc("A"))
-    print(ppi.compute_cc())
-    print(ppi.protein)
-    #ppi.write_cc("fileout.txt")
-
-
-    # ppi = Interactome("../example_files/toy2.txt")
-    # print("Init dict",ppi.dict)
-    # print("Init list",ppi.list)
-    # ppi.grapher(0.5)
-    # print("er dict",ppi.dict)
-    # print("er list", ppi.list)
-    # print(ppi.protein)
-    # print(ppi.count_cc())
-    # print(ppi.find_cc())
-    # print(ppi.extract_cc("B"))
-    
-    # print(ppi.compute_cc())
